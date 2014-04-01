@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AphexTwitter.iml" filepath="$PROJECT_DIR$/AphexTwitter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-aphex-twitter.iml" filepath="$PROJECT_DIR$/android-aphex-twitter.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
