@@ -38,6 +38,19 @@ public class TwitterClient extends OAuthBaseClient {
         client.get(url, null, handler);
     }
 
+    public void getHomeTimeline(AsyncHttpResponseHandler handler, long max_id) {
+        String url = getApiUrl("statuses/home_timeline.json");
+        RequestParams params = new RequestParams();
+        params.put("max_id", String.valueOf(max_id));
+        client.get(url, params, handler);
+    }
+
+    public void getCurrentCredentials(AsyncHttpResponseHandler handler) {
+        String url = getApiUrl("account/verify_credentials");
+        client.get(url, null, handler);
+    }
+
+
     public void getInterestingnessList(AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("?nojsoncallback=1&method=flickr.interestingness.getList");
         // Can specify query string params directly or through RequestParams.

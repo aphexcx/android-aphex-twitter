@@ -3,6 +3,14 @@
     tools:context="com.example.aphextwitter.app.TimelineActivity">
 
     <item
+        android:id="@+id/action_compose"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:onClick="onCompose"
+        android:icon="@drawable/ic_action_compose"
+        android:title="@string/action_compose" />
+
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never"
