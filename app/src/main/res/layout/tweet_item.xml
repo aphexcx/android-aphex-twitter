@@ -32,24 +32,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom"
-                android:text="User Name"
-                android:gravity="bottom" />
+                android:gravity="bottom"
+                android:text="User Name" />
 
             <TextView
                 android:id="@+id/tvTime"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom|right"
+                android:gravity="fill_vertical"
                 android:text="10m"
                 android:textColor="#777777"
-                android:textSize="10dp"
-                android:gravity="fill_vertical" />
+                android:textSize="10dp" />
         </FrameLayout>
 
         <TextView
             android:id="@+id/tvBody"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Lorem ipsum dolor sit amet" />
+
+        <ImageView
+            android:id="@+id/ivMedia"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp" />
 
     </LinearLayout>
 

@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.example.aphextwitter.app.models.Tweet;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.ParseException;
@@ -106,8 +108,42 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 
         timeView.setText(relative_dt_str);
 
+        // Try to display image media in this tweet
+        String tweet_body = tweet.getBody();
+        ImageView ivMedia = (ImageView) view.findViewById(R.id.ivMedia);
+        // reset the media imageView's bitmap in case this view is recycled
+        ivMedia.setImageDrawable(null);
+        if (tweet.getMedia().length() > 0) {
+            String media_url = "";
+            JSONArray indices = null;
+            try {
+                media_url = tweet.getMedia().getJSONObject(0).getString("media_url");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (!media_url.isEmpty()) {
+                ImageLoader.getInstance().displayImage(media_url, ivMedia);
+            }
+
+            // try to trim out the media url from the tweet
+            try {
+                indices = tweet.getMedia().getJSONObject(0).getJSONArray("indices");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (indices != null) {
+                StringBuilder tweet_body_buffer = new StringBuilder(tweet_body);
+                try {
+                    tweet_body_buffer.replace(indices.getInt(0), indices.getInt(1), "");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                tweet_body = tweet_body_buffer.toString();
+            }
+        }
+
         TextView bodyView = (TextView) view.findViewById(R.id.tvBody);
-        bodyView.setText(Html.fromHtml(tweet.getBody()));
+        bodyView.setText(Html.fromHtml(tweet_body));
         Linkify.addLinks(bodyView, Linkify.ALL);
 
         return view;
