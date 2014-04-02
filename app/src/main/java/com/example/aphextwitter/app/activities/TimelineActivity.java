@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,38 +23,76 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class TimelineActivity extends Activity {
+import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
+import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
+
+public class TimelineActivity extends Activity implements OnRefreshListener {
     private static final int TWEET_REQUEST_CODE = 100;
     private ListView lvTweets;
     private TweetsAdapter twAdapter;
-    private long lowest_tweet_id;
+    private long lowest_tweet_id = 0;
+    private PullToRefreshLayout mPullToRefreshLayout;
+    private long highest_tweet_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 
+        mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
+
+        // Now setup the PullToRefreshLayout
+        ActionBarPullToRefresh.from(this)
+                // Mark All Children as pullable
+                .allChildrenArePullable()
+                        // Set a OnRefreshListener
+                .listener(this)
+                        // Finally commit the setup to our PullToRefreshLayout
+                .setup(mPullToRefreshLayout);
+
         lvTweets = (ListView) findViewById(R.id.lvTweets);
 
-        AphexTwitterApp.getRestClient().getHomeTimeline(new JsonHttpResponseHandler() {
+        twAdapter = new TweetsAdapter(getBaseContext(), new ArrayList<Tweet>());
+        lvTweets.setAdapter(twAdapter);
+
+        loadTweets(0, -1);
+
+        lvTweets.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to your AdapterView
+                loadTweets(0, lowest_tweet_id - 1);
+            }
+        });
+    }
+
+    private void loadTweets(final long since_id, long tweet_id) {
+        AphexTwitterApp.getRestClient().getHomeTimeline(since_id, tweet_id, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(JSONArray jsonTweets) {
                 ArrayList<Tweet> tweets = Tweet.fromJson(jsonTweets);
-                twAdapter = new TweetsAdapter(getBaseContext(), tweets);
-                lvTweets.setAdapter(twAdapter);
-                Tweet last_tweet = tweets.get(tweets.size() - 1);
-                lowest_tweet_id = last_tweet.getId();
-            }
-
-            @Override
-            public void onFailure(Throwable throwable, JSONArray array) {
-                super.onFailure(throwable, array);
+                if (!tweets.isEmpty()) {
+                    Tweet last_tweet = tweets.get(tweets.size() - 1);
+                    lowest_tweet_id = last_tweet.getId();
+                    if (since_id > 0) {
+                        //these are new tweets, prepend them
+                        for (int i = 0; i < tweets.size(); i++) {
+                            twAdapter.insert(tweets.get(i), i);
+                        }
+                    } else {
+                        twAdapter.addAll(tweets);
+                    }
+                }
+                // Notify PullToRefreshLayout that the refresh has finished
+                mPullToRefreshLayout.setRefreshComplete();
             }
 
             @Override
             public void onFailure(Throwable throwable, JSONObject jsonObject) {
                 super.onFailure(throwable, jsonObject);
-                String error = null;
+                String error;
                 try {
                     error = jsonObject.getJSONArray("errors").getJSONObject(0).getString("message");
                 } catch (JSONException e) {
@@ -63,43 +102,7 @@ public class TimelineActivity extends Activity {
                 Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
             }
         });
-
-        lvTweets.setOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to your AdapterView
-//                Tweet last_tweet = (Tweet) twAdapter.getItem(totalItemsCount - 1);
-                customLoadMoreDataFromApi(lowest_tweet_id - 1);
-                // or customLoadMoreDataFromApi(totalItemsCount);
-            }
-        });
     }
-
-    private void customLoadMoreDataFromApi(final long tweet_id) {
-        AphexTwitterApp.getRestClient().getHomeTimeline(tweet_id, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(JSONArray jsonTweets) {
-                ArrayList<Tweet> tweets = Tweet.fromJson(jsonTweets);
-//                twAdapter.remove();
-//                twAdapter.notifyDataSetChanged();
-//                tweets.remove(0);
-                twAdapter.addAll(tweets);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable, JSONArray array) {
-                super.onFailure(throwable, array);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable, JSONObject jsonObject) {
-                super.onFailure(throwable, jsonObject);
-            }
-        });
-
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,5 +140,11 @@ public class TimelineActivity extends Activity {
             // Toast the name to display temporarily on screen
             Toast.makeText(this, "Tweet posted", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onRefreshStarted(View view) {
+        highest_tweet_id = twAdapter.getItem(0).getId();
+        loadTweets(highest_tweet_id, -1);
     }
 }

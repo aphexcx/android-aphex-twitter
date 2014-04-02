@@ -4,10 +4,17 @@
     android:layout_height="match_parent"
     tools:context="com.example.aphextwitter.app.activities.TimelineActivity">
 
-    <ListView
-        android:id="@+id/lvTweets"
+    <uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
+        android:id="@+id/ptr_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/lvTweets"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+    </uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>
 </RelativeLayout>
+
