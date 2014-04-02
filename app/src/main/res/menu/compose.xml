@@ -2,9 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.aphextwitter.app.activities.ComposeActivity">
 
+    <group>
+        <item
+            android:id="@+id/layout_char_count"
+            android:actionLayout="@layout/char_count"
+            android:orderInCategory="1"
+            android:showAsAction="always"
+            android:title="" />
+    </group>
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings" />
+        android:id="@+id/action_tweet"
+        android:onClick="onTweetSubmit"
+        android:orderInCategory="2"
+        android:showAsAction="always"
+        android:title="@string/action_tweet" />
 </menu>

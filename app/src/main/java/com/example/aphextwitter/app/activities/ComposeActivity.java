@@ -3,10 +3,11 @@ package com.example.aphextwitter.app.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ import org.json.JSONObject;
 public class ComposeActivity extends Activity {
     private ImageView imageView;
     private EditText etTweetText;
+    private TextView tvCharCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +45,32 @@ public class ComposeActivity extends Activity {
         nameView.setText(Html.fromHtml(formattedName));
 
         etTweetText = (EditText) findViewById(R.id.etTweetText);
+
+        etTweetText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tvCharCount.setText(String.valueOf(140 - s.length()));
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.compose, menu);
+        tvCharCount = (TextView) menu.findItem(R.id.layout_char_count).getActionView().findViewById(R.id.tvCharCount);
         return true;
     }
 
@@ -64,7 +86,7 @@ public class ComposeActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onTweetSubmit(View view) {
+    public void onTweetSubmit(MenuItem item) {
         String status = etTweetText.getText().toString();
         if (status.length() > 140) {
             Toast.makeText(this, "Your tweet is too long.", Toast.LENGTH_SHORT).show();
@@ -96,4 +118,5 @@ public class ComposeActivity extends Activity {
             });
         }
     }
+
 }

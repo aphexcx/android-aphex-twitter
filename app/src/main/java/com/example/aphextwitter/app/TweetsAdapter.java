@@ -3,6 +3,7 @@ package com.example.aphextwitter.app;
 import android.content.Context;
 import android.text.Html;
 import android.text.format.DateUtils;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,6 +108,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 
         TextView bodyView = (TextView) view.findViewById(R.id.tvBody);
         bodyView.setText(Html.fromHtml(tweet.getBody()));
+        Linkify.addLinks(bodyView, Linkify.ALL);
 
         return view;
     }
