@@ -1,4 +1,4 @@
-package com.example.aphextwitter.app;
+package com.example.aphextwitter.app.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.codepath.oauth.OAuthLoginActivity;
+import com.example.aphextwitter.app.AphexTwitterApp;
+import com.example.aphextwitter.app.R;
+import com.example.aphextwitter.app.TwitterClient;
 import com.example.aphextwitter.app.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 

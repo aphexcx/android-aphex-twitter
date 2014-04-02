@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.aphextwitter.app.ComposeActivity">
+    tools:context="com.example.aphextwitter.app.activities.ComposeActivity">
 
     <item
         android:id="@+id/action_settings"

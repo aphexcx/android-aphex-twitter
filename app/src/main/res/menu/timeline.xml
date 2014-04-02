@@ -1,13 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.aphextwitter.app.TimelineActivity">
+    tools:context="com.example.aphextwitter.app.activities.TimelineActivity">
 
     <item
         android:id="@+id/action_compose"
+        android:icon="@drawable/ic_action_compose"
+        android:onClick="onCompose"
         android:orderInCategory="100"
         android:showAsAction="always"
-        android:onClick="onCompose"
-        android:icon="@drawable/ic_action_compose"
         android:title="@string/action_compose" />
 
     <item

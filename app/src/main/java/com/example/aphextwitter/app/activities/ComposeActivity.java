@@ -1,4 +1,4 @@
-package com.example.aphextwitter.app;
+package com.example.aphextwitter.app.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.aphextwitter.app.AphexTwitterApp;
+import com.example.aphextwitter.app.R;
 import com.example.aphextwitter.app.models.Tweet;
 import com.example.aphextwitter.app.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
