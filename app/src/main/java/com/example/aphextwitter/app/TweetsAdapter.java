@@ -74,7 +74,7 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 //                DateUtils.FORMAT_ABBREV_RELATIVE).toString(); // Eventual flags
 
         // "1 min ago"
-        String relative_dt_str = DateUtils.getRelativeTimeSpanString(created_at_time, now.getTime(),
+        String relative_dt_str2 = DateUtils.getRelativeTimeSpanString(created_at_time, now.getTime(),
                 DateUtils.SECOND_IN_MILLIS, // The resolution. This will display only
                 // minutes (no "3 seconds ago")
                 DateUtils.FORMAT_ABBREV_RELATIVE).toString(); // Eventual flags
@@ -105,6 +105,8 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
 //                .toFormatter();
 
 //        String relative_dt_str = formatter.print(period);
+
+        String relative_dt_str = getRelativeTimeAgo(tweet.getCreated_at());
 
         timeView.setText(relative_dt_str);
 
@@ -147,5 +149,23 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
         Linkify.addLinks(bodyView, Linkify.ALL);
 
         return view;
+    }
+
+    // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
+    public String getRelativeTimeAgo(String rawJsonDate) {
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        String relativeDate = "";
+        try {
+            long dateMillis = sf.parse(rawJsonDate).getTime();
+            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
+                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE).toString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return relativeDate;
     }
 }
