@@ -63,7 +63,6 @@ public class ComposeActivity extends Activity {
 
             }
         });
-
     }
 
     @Override

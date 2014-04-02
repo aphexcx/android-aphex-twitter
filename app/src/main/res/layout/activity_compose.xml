@@ -55,6 +55,11 @@
                 android:layout_below="@+id/linearLayout"
                 android:ems="10"
                 android:inputType="textMultiLine" />
+            <!-- dummy scrollview to force keyboard focus -->
+            <!-- http://stackoverflow.com/questions/7200281/programatically-hide-show-android-soft-keyboard -->
+            <ScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
 
         </LinearLayout>
 
