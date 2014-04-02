@@ -4,9 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Tweet {
+public class Tweet implements Serializable {
     private String body;
     private long uid;
     private String created_at;
@@ -34,7 +35,7 @@ public class Tweet {
         ArrayList<Tweet> tweets = new ArrayList<Tweet>(jsonArray.length());
 
         for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject tweetJson = null;
+            JSONObject tweetJson;
             try {
                 tweetJson = jsonArray.getJSONObject(i);
             } catch (Exception e) {

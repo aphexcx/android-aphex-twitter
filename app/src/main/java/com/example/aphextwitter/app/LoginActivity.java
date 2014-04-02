@@ -4,8 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Toast;
 
 import com.codepath.oauth.OAuthLoginActivity;
+import com.example.aphextwitter.app.models.User;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LoginActivity extends OAuthLoginActivity<TwitterClient> {
 
@@ -26,6 +32,28 @@ public class LoginActivity extends OAuthLoginActivity<TwitterClient> {
     // i.e Display application "homepage"
     @Override
     public void onLoginSuccess() {
+        AphexTwitterApp.getRestClient().getCurrentCredentials(new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int arg0, JSONObject jsonObject) {
+                AphexTwitterApp.setCurrentUser(User.fromJson(jsonObject));
+            }
+
+            @Override
+            public void onFailure(Throwable throwable, JSONObject jsonObject) {
+                super.onFailure(throwable, jsonObject);
+                String error;
+                try {
+                    error = jsonObject.getJSONArray("errors").getJSONObject(0).getString("message");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    error = "Error fetching current user; also, couldn't extract error code";
+                }
+                Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
+            }
+
+        });
+
         Intent i = new Intent(this, TimelineActivity.class);
         startActivity(i);
     }

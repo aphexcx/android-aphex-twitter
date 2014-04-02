@@ -19,10 +19,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class TimelineActivity extends Activity {
+    private static final int TWEET_REQUEST_CODE = 100;
     private ListView lvTweets;
     private TweetsAdapter twAdapter;
     private long lowest_tweet_id;
-    private User current_user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,33 +70,10 @@ public class TimelineActivity extends Activity {
                 // or customLoadMoreDataFromApi(totalItemsCount);
             }
         });
-
-        // get current user
-        current_user = null;
-        AphexTwitterApp.getRestClient().getCurrentCredentials(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(JSONObject jsonUser) {
-                current_user = User.fromJson(jsonUser);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable, JSONObject jsonObject) {
-                super.onFailure(throwable, jsonObject);
-                String error = null;
-                try {
-                    error = jsonObject.getJSONArray("errors").getJSONObject(0).getString("message");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    error = "Error fetching current user; also, couldn't extract error code";
-                }
-                Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
-                current_user = null;
-            }
-        });
     }
 
     private void customLoadMoreDataFromApi(final long tweet_id) {
-        AphexTwitterApp.getRestClient().getHomeTimeline(new JsonHttpResponseHandler() {
+        AphexTwitterApp.getRestClient().getHomeTimeline(tweet_id, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(JSONArray jsonTweets) {
                 ArrayList<Tweet> tweets = Tweet.fromJson(jsonTweets);
@@ -115,7 +92,7 @@ public class TimelineActivity extends Activity {
             public void onFailure(Throwable throwable, JSONObject jsonObject) {
                 super.onFailure(throwable, jsonObject);
             }
-        }, tweet_id);
+        });
 
     }
 
@@ -140,8 +117,21 @@ public class TimelineActivity extends Activity {
     }
 
     public void onCompose(MenuItem item) {
+        User current_user = AphexTwitterApp.getCurrentUser();
         Intent i = new Intent(getApplicationContext(), ComposeActivity.class);
         i.putExtra("current_user", current_user);
-        startActivity(i);
+        startActivityForResult(i, TWEET_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // REQUEST_CODE is defined above
+        if (resultCode == RESULT_OK && requestCode == TWEET_REQUEST_CODE) {
+            // Extract name value from result extras
+            Tweet posted_tweet = (Tweet) data.getExtras().getSerializable("tweet");
+            twAdapter.insert(posted_tweet, 0);
+            // Toast the name to display temporarily on screen
+            Toast.makeText(this, "Tweet posted", Toast.LENGTH_SHORT).show();
+        }
     }
 }

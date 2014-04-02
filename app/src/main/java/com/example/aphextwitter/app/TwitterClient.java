@@ -38,7 +38,7 @@ public class TwitterClient extends OAuthBaseClient {
         client.get(url, null, handler);
     }
 
-    public void getHomeTimeline(AsyncHttpResponseHandler handler, long max_id) {
+    public void getHomeTimeline(long max_id, AsyncHttpResponseHandler handler) {
         String url = getApiUrl("statuses/home_timeline.json");
         RequestParams params = new RequestParams();
         params.put("max_id", String.valueOf(max_id));
@@ -46,19 +46,17 @@ public class TwitterClient extends OAuthBaseClient {
     }
 
     public void getCurrentCredentials(AsyncHttpResponseHandler handler) {
-        String url = getApiUrl("account/verify_credentials");
+        String url = getApiUrl("account/verify_credentials.json");
         client.get(url, null, handler);
     }
 
-
-    public void getInterestingnessList(AsyncHttpResponseHandler handler) {
-        String apiUrl = getApiUrl("?nojsoncallback=1&method=flickr.interestingness.getList");
-        // Can specify query string params directly or through RequestParams.
+    public void postUpdate(String status, AsyncHttpResponseHandler handler) {
+        String url = getApiUrl("statuses/update.json");
         RequestParams params = new RequestParams();
-        params.put("format", "json");
-        client.get(apiUrl, params, handler);
+        params.put("status", status);
+        client.post(url, params, handler);
     }
-    
+
     /* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
      * 	  i.e getApiUrl("statuses/home_timeline.json");
      * 2. Define the parameters to pass to the request (query or body)

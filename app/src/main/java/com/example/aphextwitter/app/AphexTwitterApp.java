@@ -2,6 +2,7 @@ package com.example.aphextwitter.app;
 
 import android.content.Context;
 
+import com.example.aphextwitter.app.models.User;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -17,9 +18,18 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
  */
 public class AphexTwitterApp extends com.activeandroid.app.Application {
     private static Context context;
+    private static User user;
 
     public static TwitterClient getRestClient() {
         return (TwitterClient) TwitterClient.getInstance(TwitterClient.class, AphexTwitterApp.context);
+    }
+
+    public static User getCurrentUser() {
+        return user;
+    }
+
+    public static void setCurrentUser(User user) {
+        AphexTwitterApp.user = user;
     }
 
     @Override

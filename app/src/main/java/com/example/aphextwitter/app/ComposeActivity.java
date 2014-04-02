@@ -1,10 +1,13 @@
 package com.example.aphextwitter.app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,15 +17,13 @@ import com.example.aphextwitter.app.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 
 public class ComposeActivity extends Activity {
     private ImageView imageView;
+    private EditText etTweetText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,34 +39,9 @@ public class ComposeActivity extends Activity {
         String formattedName = "<b>" + current_user.getName() + "</b>" +
                 " <small><font color='#777777'>@" + current_user.getScreenName() + "</font></small>";
         nameView.setText(Html.fromHtml(formattedName));
+
+        etTweetText = (EditText) findViewById(R.id.etTweetText);
     }
-
-    private User getCurrentUser() {
-        // I can't figure out how to make a final outside variable that onSuccess can modify, fuck it!
-        final User[] user = new User[1];
-        AphexTwitterApp.getRestClient().getCurrentCredentials(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(JSONObject jsonUser) {
-                user[0] = User.fromJson(jsonUser);
-            }
-
-            @Override
-            public void onFailure(Throwable throwable, JSONObject jsonObject) {
-                super.onFailure(throwable, jsonObject);
-                String error = null;
-                try {
-                    error = jsonObject.getJSONArray("errors").getJSONObject(0).getString("message");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    error = "Error fetching current user; also, couldn't extract error code";
-                }
-                Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
-                user[0] = null;
-            }
-        });
-        return user[0];
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -86,4 +62,36 @@ public class ComposeActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void onTweetSubmit(View view) {
+        String status = etTweetText.getText().toString();
+        if (status.length() > 140) {
+            Toast.makeText(this, "Your tweet is too long.", Toast.LENGTH_SHORT).show();
+        } else {
+            AphexTwitterApp.getRestClient().postUpdate(status, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(JSONObject jsonTweet) {
+                    Tweet posted_tweet = Tweet.fromJson(jsonTweet);
+                    Intent data = new Intent();
+                    // Pass relevant data back as a result
+                    data.putExtra("tweet", posted_tweet);
+                    // Activity finished ok, return the data
+                    setResult(RESULT_OK, data); // set result code and bundle data for response
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Throwable throwable, JSONObject jsonObject) {
+                    super.onFailure(throwable, jsonObject);
+                    String error;
+                    try {
+                        error = jsonObject.getJSONArray("errors").getJSONObject(0).getString("message");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        error = "Error posting tweet; also, couldn't extract error code";
+                    }
+                    Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
 }
