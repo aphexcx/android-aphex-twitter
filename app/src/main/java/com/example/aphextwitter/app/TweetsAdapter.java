@@ -166,6 +166,17 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             e.printStackTrace();
         }
 
+        // i'm sorry
+        relativeDate = relativeDate.replaceAll(" ago", "");
+        relativeDate = relativeDate.replaceAll(" secs", "s");
+        relativeDate = relativeDate.replaceAll(" sec", "s");
+        relativeDate = relativeDate.replaceAll(" mins", "m");
+        relativeDate = relativeDate.replaceAll(" min", "m");
+        relativeDate = relativeDate.replaceAll(" hours", "h");
+        relativeDate = relativeDate.replaceAll(" hour", "h");
+        relativeDate = relativeDate.replaceAll(" days", "d");
+        relativeDate = relativeDate.replaceAll(" day", "d");
+
         return relativeDate;
     }
 }
