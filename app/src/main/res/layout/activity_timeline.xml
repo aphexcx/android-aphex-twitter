@@ -5,16 +5,28 @@
     tools:context="com.example.aphextwitter.app.activities.TimelineActivity">
 
 
-    <fragment
-        android:id="@+id/fragment_tweets_list"
-        android:name="com.example.aphextwitter.app.fragments.TweetsListFragment"
+    <FrameLayout
+        android:id="@+id/frame_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true">
+
+    </FrameLayout>
+    <!--<fragment-->
+    <!--android:id="@+id/fragment_tweets_list"-->
+    <!--android:name="com.example.aphextwitter.app.fragments.MentionsFragment"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_alignParentEnd="true"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:layout_alignParentTop="true"-->
+    <!--tools:layout="@layout/fragment_tweets_list" />-->
+
 </RelativeLayout>
 

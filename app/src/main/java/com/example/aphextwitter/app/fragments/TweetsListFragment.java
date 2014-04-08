@@ -1,25 +1,18 @@
 package com.example.aphextwitter.app.fragments;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.example.aphextwitter.app.AphexTwitterApp;
 import com.example.aphextwitter.app.EndlessScrollListener;
 import com.example.aphextwitter.app.R;
 import com.example.aphextwitter.app.TweetsAdapter;
 import com.example.aphextwitter.app.models.Tweet;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -28,32 +21,33 @@ import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 /**
- * A simple {@link android.support.v4.app.Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link TweetsListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TweetsListFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
-public class TweetsListFragment extends Fragment implements OnRefreshListener {
+public abstract class TweetsListFragment extends Fragment implements OnRefreshListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+//    private static final String ARG_PARAM1 = "param1";
+//    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+//    // TODO: Rename and change types of parameters
+//    private String mParam1;
+//    private String mParam2;
 
+    protected TweetsAdapter twAdapter;
+    protected long lowest_tweet_id = 0;
+    protected PullToRefreshLayout mPullToRefreshLayout;
     private OnFragmentInteractionListener mListener;
     private ListView lvTweets;
-    private TweetsAdapter twAdapter;
-    private long lowest_tweet_id = 0;
-    private PullToRefreshLayout mPullToRefreshLayout;
     private long highest_tweet_id;
 
     public TweetsListFragment() {
         // Required empty public constructor
+    }
+
+    public TweetsAdapter getAdapter() {
+        return twAdapter;
     }
 
     /**
@@ -64,23 +58,23 @@ public class TweetsListFragment extends Fragment implements OnRefreshListener {
      * @param param2 Parameter 2.
      * @return A new instance of fragment TweetsListFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static TweetsListFragment newInstance(String param1, String param2) {
-        TweetsListFragment fragment = new TweetsListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+//    TODO: Rename and change types and number of parameters
+//    public static TweetsListFragment newInstance(String param1, String param2) {
+//        TweetsListFragment fragment = new TweetsListFragment();
+//        Bundle args = new Bundle();
+//        args.putString(ARG_PARAM1, param1);
+//        args.putString(ARG_PARAM2, param2);
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+//        if (getArguments() != null) {
+//            mParam1 = getArguments().getString(ARG_PARAM1);
+//            mParam2 = getArguments().getString(ARG_PARAM2);
+//        }
     }
 
     @Override
@@ -119,54 +113,12 @@ public class TweetsListFragment extends Fragment implements OnRefreshListener {
         return view;
     }
 
-    private void loadTweets(final long since_id, long tweet_id) {
-        AphexTwitterApp.getRestClient().getHomeTimeline(since_id, tweet_id, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(JSONArray jsonTweets) {
-                ArrayList<Tweet> tweets = Tweet.fromJson(jsonTweets);
-                if (!tweets.isEmpty()) {
-                    Tweet last_tweet = tweets.get(tweets.size() - 1);
-                    lowest_tweet_id = last_tweet.getId();
-                    if (since_id > 0) {
-                        //these are new tweets, prepend them
-                        for (int i = 0; i < tweets.size(); i++) {
-                            twAdapter.insert(tweets.get(i), i);
-                        }
-                    } else {
-                        twAdapter.addAll(tweets);
-                    }
-                }
-                // Notify PullToRefreshLayout that the refresh has finished
-                mPullToRefreshLayout.setRefreshComplete();
-            }
-
-            @Override
-            public void onFailure(Throwable throwable, JSONObject jsonObject) {
-                super.onFailure(throwable, jsonObject);
-                String error;
-                try {
-                    error = jsonObject.getJSONArray("errors").getJSONObject(0).getString("message");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    error = "Error fetching HomeTimeline; also, couldn't extract error code";
-                }
-                Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
+    protected abstract void loadTweets(final long since_id, long tweet_id);
 
     @Override
     public void onRefreshStarted(View view) {
         highest_tweet_id = twAdapter.getItem(0).getId();
         loadTweets(highest_tweet_id, -1);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override

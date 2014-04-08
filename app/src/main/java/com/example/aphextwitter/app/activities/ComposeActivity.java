@@ -96,7 +96,10 @@ public class ComposeActivity extends Activity {
                     Tweet posted_tweet = Tweet.fromJson(jsonTweet);
                     Intent data = new Intent();
                     // Pass relevant data back as a result
-                    data.putExtra("tweet", posted_tweet);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("tweet", posted_tweet);
+                    data.putExtras(bundle);
+//                    data.putExtra("tweet", posted_tweet);
                     // Activity finished ok, return the data
                     setResult(RESULT_OK, data); // set result code and bundle data for response
                     finish();
