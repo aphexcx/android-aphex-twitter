@@ -14,8 +14,8 @@ public class Tweet implements Serializable {
     private boolean favorited;
     private boolean retweeted;
     private User user;
-    private JSONArray urls;
-    private JSONArray media;
+    private SerializableJSONArray urls;
+    private SerializableJSONArray media;
 
     public static Tweet fromJson(JSONObject jsonObject) {
         Tweet tweet = new Tweet();
@@ -25,11 +25,11 @@ public class Tweet implements Serializable {
             tweet.created_at = jsonObject.getString("created_at");
             tweet.favorited = jsonObject.getBoolean("favorited");
             tweet.retweeted = jsonObject.getBoolean("retweeted");
-            tweet.urls = jsonObject.getJSONObject("entities").getJSONArray("urls");
+            tweet.urls = new SerializableJSONArray(jsonObject.getJSONObject("entities").getJSONArray("urls"));
             try {
-                tweet.media = jsonObject.getJSONObject("entities").getJSONArray("media");
+                tweet.media = new SerializableJSONArray(jsonObject.getJSONObject("entities").getJSONArray("media"));
             } catch (JSONException e) {
-                tweet.media = new JSONArray();
+                tweet.media = new SerializableJSONArray(new JSONArray());
             }
             tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         } catch (JSONException e) {
@@ -85,10 +85,10 @@ public class Tweet implements Serializable {
     }
 
     public JSONArray getUrls() {
-        return urls;
+        return urls.getJSONArray();
     }
 
     public JSONArray getMedia() {
-        return media;
+        return media.getJSONArray();
     }
 }
