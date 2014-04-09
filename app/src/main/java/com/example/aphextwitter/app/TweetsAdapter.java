@@ -1,6 +1,7 @@
 package com.example.aphextwitter.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.text.util.Linkify;
@@ -11,7 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.aphextwitter.app.activities.ProfileActivity;
 import com.example.aphextwitter.app.models.Tweet;
+import com.example.aphextwitter.app.models.User;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
@@ -39,10 +42,19 @@ public class TweetsAdapter extends ArrayAdapter<Tweet> {
             view = inflater.inflate(R.layout.tweet_item, null);
         }
 
-        Tweet tweet = getItem(position);
+        final Tweet tweet = getItem(position);
 
         ImageView imageView = (ImageView) view.findViewById(R.id.ivProfile);
         ImageLoader.getInstance().displayImage(tweet.getUser().getProfileImageUrl(), imageView);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(), ProfileActivity.class);
+                User user = tweet.getUser();
+                i.putExtra("user", user);
+                getContext().startActivity(i);
+            }
+        });
 
         TextView nameView = (TextView) view.findViewById(R.id.tvName);
         String formattedName = "<b>" + tweet.getUser().getName() + "</b>" +

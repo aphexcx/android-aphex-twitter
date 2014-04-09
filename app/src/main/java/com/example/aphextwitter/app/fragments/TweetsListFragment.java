@@ -67,7 +67,6 @@ public abstract class TweetsListFragment extends Fragment implements OnRefreshLi
 //        fragment.setArguments(args);
 //        return fragment;
 //    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +135,10 @@ public abstract class TweetsListFragment extends Fragment implements OnRefreshLi
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public String getMyName() {
+        return getClass().getSimpleName();
     }
 
     /**

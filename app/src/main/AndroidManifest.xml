@@ -11,7 +11,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/CustomActionBarTheme">
-    <meta-data
+        <meta-data
             android:name="AA_DB_NAME"
             android:value="RestClient.db" />
         <meta-data
@@ -19,7 +19,7 @@
             android:value="1" />
 
         <activity
-            android:name=".activities.LoginActivity"
+            android:name="com.example.aphextwitter.app.activities.LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,12 +38,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.TimelineActivity"
+            android:name="com.example.aphextwitter.app.activities.TimelineActivity"
             android:label="@string/title_activity_timeline" />
         <activity
-            android:name=".activities.ComposeActivity"
+            android:name="com.example.aphextwitter.app.activities.ComposeActivity"
             android:label="@string/title_activity_compose"
-            android:parentActivityName=".activities.TimelineActivity">
+            android:parentActivityName="com.example.aphextwitter.app.activities.TimelineActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="TimelineActivity" />
+        </activity>
+        <activity
+            android:name="com.example.aphextwitter.app.activities.ProfileActivity"
+            android:label="@string/title_activity_profile"
+            android:parentActivityName="com.example.aphextwitter.app.activities.TimelineActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="TimelineActivity" />

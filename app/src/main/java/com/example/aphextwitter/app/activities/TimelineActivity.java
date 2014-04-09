@@ -22,6 +22,8 @@ import com.example.aphextwitter.app.models.User;
 
 public class TimelineActivity extends Activity implements ActionBar.TabListener {
     private static final int TWEET_REQUEST_CODE = 100;
+    private HomeTimelineFragment homeTimelineFragment;
+    private MentionsFragment mentionsFragment;
 
 //    private TweetsListFragment fragmentTweets;
 
@@ -30,6 +32,8 @@ public class TimelineActivity extends Activity implements ActionBar.TabListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
 //        fragmentTweets = (TweetsListFragment) getFragmentManager().findFragmentById(R.id.fragment_tweets_list);
+        homeTimelineFragment = new HomeTimelineFragment();
+        mentionsFragment = new MentionsFragment();
         setupNavigationTabs();
     }
 
@@ -95,9 +99,9 @@ public class TimelineActivity extends Activity implements ActionBar.TabListener 
         FragmentManager manager = getFragmentManager();
         FragmentTransaction fts = manager.beginTransaction();
         if (tab.getTag() == "HomeTimelineFragment") {
-            fts.replace(R.id.frame_container, new HomeTimelineFragment(), "HomeTimelineFragment");
+            fts.replace(R.id.frame_container, homeTimelineFragment, homeTimelineFragment.getMyName());
         } else {
-            fts.replace(R.id.frame_container, new MentionsFragment());
+            fts.replace(R.id.frame_container, mentionsFragment, mentionsFragment.getMyName());
         }
         fts.commit();
     }
@@ -110,5 +114,12 @@ public class TimelineActivity extends Activity implements ActionBar.TabListener 
     @Override
     public void onTabReselected(Tab tab, FragmentTransaction ft) {
 
+    }
+
+    public void onProfileView(MenuItem item) {
+        Intent i = new Intent(this, ProfileActivity.class);
+        User user = AphexTwitterApp.getCurrentUser();
+        i.putExtra("user", user);
+        startActivity(i);
     }
 }

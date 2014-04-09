@@ -11,5 +11,7 @@
     <string name="title_activity_compose">Compose</string>
     <string name="action_tweet">TWEET</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_profile">Profile</string>
+    <string name="title_activity_profile">ProfileActivity</string>
 
 </resources>
